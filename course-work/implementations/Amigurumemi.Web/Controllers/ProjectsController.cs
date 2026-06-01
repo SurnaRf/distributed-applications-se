@@ -22,7 +22,12 @@ public class ProjectsController : Controller
 		_patternApiService = patternApiService;
 	}
 
-	public async Task<IActionResult> Index(string? name, ProjectStatus? status, int page = 1)
+	public async Task<IActionResult> Index(
+		string? name,
+		ProjectStatus? status,
+		string? orderBy,          
+		bool sortAsc = true,      
+		int page = 1)
 	{
 		var sessionUserId = HttpContext.Session.GetString("UserId");
 		var sessionRole = HttpContext.Session.GetString("Role");
@@ -41,13 +46,15 @@ public class ProjectsController : Controller
 			{
 				Name = name,
 				Status = status,
-				UserId = filterUserId 
+				UserId = filterUserId
 			},
 			Pager = new PagerRequest
 			{
 				Page = page,
 				PageSize = 6
-			}
+			},
+			OrderBy = orderBy,   
+			SortAsc = sortAsc     
 		};
 
 		var response = await _apiService.SearchAsync(request);

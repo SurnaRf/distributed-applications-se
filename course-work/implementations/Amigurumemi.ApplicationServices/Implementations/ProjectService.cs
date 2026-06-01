@@ -246,6 +246,32 @@ namespace Amigurumemi.ApplicationServices.Implementations
 				query = query.Where(x => x.Status == request.Filter.Status.Value);
 			}
 
+			if (!string.IsNullOrWhiteSpace(request.OrderBy))
+			{
+				switch (request.OrderBy.ToLower())
+				{
+					case "name":
+						query = request.SortAsc ? query.OrderBy(x => x.Name) : query.OrderByDescending(x => x.Name);
+						break;
+					case "progress":
+						query = request.SortAsc ? query.OrderBy(x => x.Progress) : query.OrderByDescending(x => x.Progress);
+						break;
+					case "status":
+						query = request.SortAsc ? query.OrderBy(x => x.Status) : query.OrderByDescending(x => x.Status);
+						break;
+					case "startdate":
+						query = request.SortAsc ? query.OrderBy(x => x.StartDate) : query.OrderByDescending(x => x.StartDate);
+						break;
+					default:
+						query = query.OrderBy(x => x.Id);
+						break;
+				}
+			}
+			else
+			{
+				query = query.OrderBy(x => x.Id);
+			}
+
 			var totalCount = query.Count();
 
 			var pagedProjects = query
@@ -283,7 +309,9 @@ namespace Amigurumemi.ApplicationServices.Implementations
 					PageSize = pageSize,
 					Count = totalCount
 				},
-				Filter = request.Filter
+				Filter = request.Filter,
+				OrderBy = request.OrderBy ?? "Id",
+				SortAsc = request.SortAsc
 			};
 		}
 	}

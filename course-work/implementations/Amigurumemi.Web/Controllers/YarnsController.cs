@@ -11,7 +11,12 @@ public class YarnsController : Controller
 	{
 		_yarnApiService = yarnApiService;
 	}
-	public async Task<IActionResult> Index(string? name, string? brand, int page = 1)
+	public async Task<IActionResult> Index(
+		string? name,
+		string? brand,
+		string? orderBy,          
+		bool sortAsc = true,     
+		int page = 1)
 	{
 		var sessionUserId = HttpContext.Session.GetString("UserId");
 		var sessionRole = HttpContext.Session.GetString("Role");
@@ -30,13 +35,15 @@ public class YarnsController : Controller
 			{
 				Name = name,
 				Brand = brand,
-				UserId = filterUserId 
+				UserId = filterUserId
 			},
 			Pager = new Amigurumemi.Contracts.Messaging.Requests.Shared.PagerRequest
 			{
 				Page = page,
 				PageSize = 5
-			}
+			},
+			OrderBy = orderBy,    
+			SortAsc = sortAsc     
 		};
 
 		var response = await _yarnApiService.SearchAsync(request);

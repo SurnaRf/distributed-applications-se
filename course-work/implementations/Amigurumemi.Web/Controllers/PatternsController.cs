@@ -19,6 +19,8 @@ public class PatternsController : Controller
 		string? name,
 		string? category,
 		DifficultyLevel? difficulty,
+		string? orderBy,         
+		bool sortAsc = true,      
 		int page = 1)
 	{
 		var sessionUserId = HttpContext.Session.GetString("UserId");
@@ -41,14 +43,15 @@ public class PatternsController : Controller
 						Name = name,
 						Category = category,
 						Difficulty = difficulty,
-						UserId = filterUserId 
+						UserId = filterUserId
 					},
-
 					Pager = new PagerRequest
 					{
 						Page = page,
 						PageSize = 5
-					}
+					},
+					OrderBy = orderBy,    
+					SortAsc = sortAsc     
 				});
 
 		return View(response);

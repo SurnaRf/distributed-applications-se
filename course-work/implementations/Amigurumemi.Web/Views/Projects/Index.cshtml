@@ -40,6 +40,22 @@
         </div>
     </form>
 
+    <div class="d-flex justify-content-end gap-2 mb-3 bg-light p-2 rounded shadow-sm">
+        <span class="align-self-center small fw-bold text-muted me-2"><i class="bi bi-sort-down"></i> Sort by:</span>
+        <a asp-action="Index" asp-route-orderBy="name" asp-route-sortAsc="@(Model.OrderBy == "name" ? !Model.SortAsc : true)" asp-route-name="@ViewBag.CurrentName" asp-route-status="@ViewBag.CurrentStatus" class="btn btn-sm @(Model.OrderBy == "name" ? "btn-primary" : "btn-outline-secondary")">
+            Name @(Model.OrderBy == "name" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+        <a asp-action="Index" asp-route-orderBy="progress" asp-route-sortAsc="@(Model.OrderBy == "progress" ? !Model.SortAsc : true)" asp-route-name="@ViewBag.CurrentName" asp-route-status="@ViewBag.CurrentStatus" class="btn btn-sm @(Model.OrderBy == "progress" ? "btn-primary" : "btn-outline-secondary")">
+            Progress @(Model.OrderBy == "progress" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+        <a asp-action="Index" asp-route-orderBy="status" asp-route-sortAsc="@(Model.OrderBy == "status" ? !Model.SortAsc : true)" asp-route-name="@ViewBag.CurrentName" asp-route-status="@ViewBag.CurrentStatus" class="btn btn-sm @(Model.OrderBy == "status" ? "btn-primary" : "btn-outline-secondary")">
+            Status @(Model.OrderBy == "status" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+        <a asp-action="Index" asp-route-orderBy="startdate" asp-route-sortAsc="@(Model.OrderBy == "startdate" ? !Model.SortAsc : true)" asp-route-name="@ViewBag.CurrentName" asp-route-status="@ViewBag.CurrentStatus" class="btn btn-sm @(Model.OrderBy == "startdate" ? "btn-primary" : "btn-outline-secondary")">
+            Start Date @(Model.OrderBy == "startdate" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+    </div>
+
     <div class="row">
         @if (Model.Items != null && Model.Items.Any())
         {
@@ -140,7 +156,9 @@
                     <a class="page-link" asp-action="Index"
                        asp-route-page="@(currentPage - 1)"
                        asp-route-name="@ViewBag.CurrentName"
-                       asp-route-status="@ViewBag.CurrentStatus">Previous</a>
+                       asp-route-status="@ViewBag.CurrentStatus"
+                       asp-route-orderBy="@Model.OrderBy"
+                       asp-route-sortAsc="@Model.SortAsc">Previous</a>
                 </li>
 
                 @for (int i = 1; i <= totalPages; i++)
@@ -149,7 +167,9 @@
                         <a class="page-link" asp-action="Index"
                            asp-route-page="@i"
                            asp-route-name="@ViewBag.CurrentName"
-                           asp-route-status="@ViewBag.CurrentStatus">@i</a>
+                           asp-route-status="@ViewBag.CurrentStatus"
+                           asp-route-orderBy="@Model.OrderBy"
+                           asp-route-sortAsc="@Model.SortAsc">@i</a>
                     </li>
                 }
 
@@ -157,7 +177,9 @@
                     <a class="page-link" asp-action="Index"
                        asp-route-page="@(currentPage + 1)"
                        asp-route-name="@ViewBag.CurrentName"
-                       asp-route-status="@ViewBag.CurrentStatus">Next</a>
+                       asp-route-status="@ViewBag.CurrentStatus"
+                       asp-route-orderBy="@Model.OrderBy"
+                       asp-route-sortAsc="@Model.SortAsc">Next</a>
                 </li>
             </ul>
             <div class="text-center text-muted small mt-2">

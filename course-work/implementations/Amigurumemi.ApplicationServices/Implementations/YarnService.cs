@@ -211,6 +211,32 @@ namespace Amigurumemi.ApplicationServices.Implementations
 										 x.Brand.Contains(request.Filter.Brand, StringComparison.OrdinalIgnoreCase));
 			}
 
+			if (!string.IsNullOrWhiteSpace(request.OrderBy))
+			{
+				switch (request.OrderBy.ToLower())
+				{
+					case "name":
+						query = request.SortAsc ? query.OrderBy(x => x.Name) : query.OrderByDescending(x => x.Name);
+						break;
+					case "brand":
+						query = request.SortAsc ? query.OrderBy(x => x.Brand) : query.OrderByDescending(x => x.Brand);
+						break;
+					case "color":
+						query = request.SortAsc ? query.OrderBy(x => x.Color) : query.OrderByDescending(x => x.Color);
+						break;
+					case "price":
+						query = request.SortAsc ? query.OrderBy(x => x.Price) : query.OrderByDescending(x => x.Price);
+						break;
+					default:
+						query = query.OrderBy(x => x.Id);
+						break;
+				}
+			}
+			else
+			{
+				query = query.OrderBy(x => x.Id);
+			}
+
 			var totalCount = query.Count();
 
 			var pagedData = query
@@ -236,7 +262,9 @@ namespace Amigurumemi.ApplicationServices.Implementations
 					PageSize = pageSize,
 					Count = totalCount
 				},
-				Filter = request.Filter
+				Filter = request.Filter,
+				OrderBy = request.OrderBy ?? "Id",
+				SortAsc = request.SortAsc
 			};
 		}
 	}

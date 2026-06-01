@@ -4,25 +4,87 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="bi bi-basket-fill"></i> Yarn Inventory</h2>
-        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> Add New Yarn</a>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Add New Yarn
+        </a>
     </div>
 
     <form method="get" class="card p-3 bg-light mb-4 shadow-sm">
+        <input type="hidden" name="orderBy" value="@Model.OrderBy" />
+        <input type="hidden" name="sortAsc" value="@Model.SortAsc.ToString().ToLower()" />
+
         <div class="row g-3">
             <div class="col-md-5">
                 <label class="form-label small fw-bold">Yarn Name</label>
-                <input type="text" name="name" value="@Model.Filter?.Name" class="form-control" placeholder="e.g., Cotton Soft" />
+                <input type="text"
+                       name="name"
+                       value="@Model.Filter?.Name"
+                       class="form-control"
+                       placeholder="e.g., Cotton Soft" />
             </div>
+
             <div class="col-md-5">
                 <label class="form-label small fw-bold">Brand</label>
-                <input type="text" name="brand" value="@Model.Filter?.Brand" class="form-control" placeholder="e.g., Alize" />
+                <input type="text"
+                       name="brand"
+                       value="@Model.Filter?.Brand"
+                       class="form-control"
+                       placeholder="e.g., Alize" />
             </div>
+
             <div class="col-md-2 d-flex align-items-end gap-2">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
-                <a asp-action="Index" class="btn btn-secondary w-100">Clear</a>
+                <button type="submit" class="btn btn-primary w-100">
+                    Filter
+                </button>
+
+                <a asp-action="Index" class="btn btn-secondary w-100">
+                    Clear
+                </a>
             </div>
         </div>
     </form>
+
+    <div class="d-flex justify-content-end gap-2 mb-3 bg-light p-2 rounded shadow-sm">
+        <span class="align-self-center small fw-bold text-muted me-2">
+            <i class="bi bi-sort-down"></i> Sort by:
+        </span>
+
+        <a asp-action="Index"
+               asp-route-orderBy="name"
+               asp-route-sortAsc="@(Model.OrderBy == "name" ? !Model.SortAsc : true)"
+               asp-route-name="@Model.Filter?.Name"
+               asp-route-brand="@Model.Filter?.Brand"
+               class="btn btn-sm @(Model.OrderBy == "name" ? "btn-primary" : "btn-outline-secondary")">
+            Name @(Model.OrderBy == "name" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+
+        <a asp-action="Index"
+               asp-route-orderBy="brand"
+               asp-route-sortAsc="@(Model.OrderBy == "brand" ? !Model.SortAsc : true)"
+               asp-route-name="@Model.Filter?.Name"
+               asp-route-brand="@Model.Filter?.Brand"
+               class="btn btn-sm @(Model.OrderBy == "brand" ? "btn-primary" : "btn-outline-secondary")">
+            Brand @(Model.OrderBy == "brand" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+
+        <a asp-action="Index"
+               asp-route-orderBy="color"
+               asp-route-sortAsc="@(Model.OrderBy == "color" ? !Model.SortAsc : true)"
+               asp-route-name="@Model.Filter?.Name"
+               asp-route-brand="@Model.Filter?.Brand"
+               class="btn btn-sm @(Model.OrderBy == "color" ? "btn-primary" : "btn-outline-secondary")">
+            Color @(Model.OrderBy == "color" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+
+        <a asp-action="Index"
+               asp-route-orderBy="price"
+               asp-route-sortAsc="@(Model.OrderBy == "price" ? !Model.SortAsc : true)"
+               asp-route-name="@Model.Filter?.Name"
+               asp-route-brand="@Model.Filter?.Brand"
+               class="btn btn-sm @(Model.OrderBy == "price" ? "btn-primary" : "btn-outline-secondary")">
+            Price @(Model.OrderBy == "price" ? (Model.SortAsc ? "▲" : "▼") : "")
+        </a>
+    </div>
 
     <div class="card shadow-sm">
         <div class="table-responsive">
@@ -37,11 +99,14 @@
                         <th class="text-end">Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @if (Model.Items == null || !Model.Items.Any())
                     {
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">No yarns found in inventory.</td>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                No yarns found in inventory.
+                            </td>
                         </tr>
                     }
                     else
@@ -51,15 +116,31 @@
                             <tr>
                                 <td><strong>@item.Name</strong></td>
                                 <td>@item.Brand</td>
+
                                 <td>
-                                    <span class="badge bg-light text-dark border shadow-sm">🎨 @item.Color</span>
+                                    <span class="badge bg-light text-dark border shadow-sm">
+                                        🎨 @item.Color
+                                    </span>
                                 </td>
+
                                 <td>@item.Weight g</td>
-                                <td class="fw-bold text-success">@item.Price.ToString("C")</td>
+
+                                <td class="fw-bold text-success">
+                                    @item.Price.ToString("C")
+                                </td>
 
                                 <td class="text-end">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                        Edit
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-outline-danger">
+                                        Delete
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -76,33 +157,52 @@
 
         <nav aria-label="Page navigation" class="mt-4">
             <ul class="pagination justify-content-center">
+
                 <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index"
-                       asp-route-page="@(currentPage - 1)"
-                       asp-route-name="@Model.Filter?.Name"
-                       asp-route-brand="@Model.Filter?.Brand">Previous</a>
+                    <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@(currentPage - 1)"
+                           asp-route-name="@Model.Filter?.Name"
+                           asp-route-brand="@Model.Filter?.Brand"
+                           asp-route-orderBy="@Model.OrderBy"
+                           asp-route-sortAsc="@Model.SortAsc">
+                        Previous
+                    </a>
                 </li>
 
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <li class="page-item @(i == currentPage ? "active" : "")">
-                        <a class="page-link" asp-action="Index"
-                           asp-route-page="@i"
-                           asp-route-name="@Model.Filter?.Name"
-                           asp-route-brand="@Model.Filter?.Brand">@i</a>
+                        <a class="page-link"
+                               asp-action="Index"
+                               asp-route-page="@i"
+                               asp-route-name="@Model.Filter?.Name"
+                               asp-route-brand="@Model.Filter?.Brand"
+                               asp-route-orderBy="@Model.OrderBy"
+                               asp-route-sortAsc="@Model.SortAsc">
+                            @i
+                        </a>
                     </li>
                 }
 
                 <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
-                    <a class="page-link" asp-action="Index"
-                       asp-route-page="@(currentPage + 1)"
-                       asp-route-name="@Model.Filter?.Name"
-                       asp-route-brand="@Model.Filter?.Brand">Next</a>
+                    <a class="page-link"
+                           asp-action="Index"
+                           asp-route-page="@(currentPage + 1)"
+                           asp-route-name="@Model.Filter?.Name"
+                           asp-route-brand="@Model.Filter?.Brand"
+                           asp-route-orderBy="@Model.OrderBy"
+                           asp-route-sortAsc="@Model.SortAsc">
+                        Next
+                    </a>
                 </li>
+
             </ul>
+
             <div class="text-center text-muted small mt-2">
                 Showing @Model.Items.Count of @Model.Pager.Count yarns
             </div>
         </nav>
     }
 </div>
+
