@@ -1,0 +1,126 @@
+﻿@using Amigurumemi.Contracts.Messaging.Responses.Patterns
+@using Amigurumemi.Data.Entities
+@model PatternGetResponse
+
+<h2>Patterns</h2>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> Create New</a>
+</div>
+
+<form method="get" class="card p-3 bg-light mb-4 shadow-sm">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label small fw-bold">Name</label>
+            <input type="text" name="name" value="@Model.Filter?.Name" class="form-control form-control-sm" placeholder="Search by name..." />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-bold">Category</label>
+            <input type="text" name="category" value="@Model.Filter?.Category" class="form-control form-control-sm" placeholder="e.g., Animals" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-bold">Difficulty</label>
+            <select name="difficulty" class="form-select form-select-sm">
+                <option value="">-- All --</option>
+                <option value="1">Easy</option>
+                <option value="2">Medium</option>
+                <option value="3">Hard</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-1">
+            <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
+            <a asp-action="Index" class="btn btn-secondary btn-sm w-100">Clear</a>
+        </div>
+    </div>
+</form>
+<table class="table table-striped table-hover mt-3 shadow-sm rounded">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Difficulty</th>
+            <th>Estimated Hours</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Items != null && Model.Items.Any())
+        {
+            foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>@item.Category</td>
+                    <td>
+                        <span class="badge @(item.Difficulty.ToString() == "Easy" ? "bg-success" : item.Difficulty.ToString() == "Medium" ? "bg-warning text-dark" : "bg-danger")">
+                            @item.Difficulty
+                        </span>
+                    </td>
+                    <td>@item.EstimatedHours hours</td>
+                    <td>
+                        @if (!item.IsPremium || item.Price == 0)
+                        {
+                            <span class="text-success fw-bold">Free</span>
+                        }
+                        else
+                        {
+                            <span>@item.Price.ToString("C")</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">No patterns found matching the criteria.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Model.Pager != null && Model.Pager.Count > Model.Pager.PageSize)
+{
+    int totalPages = (int)Math.Ceiling((double)Model.Pager.Count / Model.Pager.PageSize);
+    int currentPage = Model.Pager.Page;
+
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            
+            <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index"
+                   asp-route-page="@(currentPage - 1)"
+                   asp-route-name="@Model.Filter?.Name"
+                   asp-route-category="@Model.Filter?.Category"
+                   asp-route-difficulty="@Model.Filter?.Difficulty">Previous</a>
+            </li>
+
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@i"
+                       asp-route-name="@Model.Filter?.Name"
+                       asp-route-category="@Model.Filter?.Category"
+                       asp-route-difficulty="@Model.Filter?.Difficulty">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index"
+                   asp-route-page="@(currentPage + 1)"
+                   asp-route-name="@Model.Filter?.Name"
+                   asp-route-category="@Model.Filter?.Category"
+                   asp-route-difficulty="@Model.Filter?.Difficulty">Next</a>
+            </li>
+        </ul>
+        <div class="text-center text-muted small mt-1">
+            Showing @Model.Items.Count of @Model.Pager.Count items
+        </div>
+    </nav>
+}

@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="Amigurumemi.API/Amigurumemi.API.csproj" Id="16ae4c53-4981-4271-983a-a03a6c73ae1e" />
+  <Project Path="Amigurumemi.ApplicationServices/Amigurumemi.ApplicationServices.csproj" Id="223f7de3-f475-4bad-9dd2-b20ee71f9043" />
+  <Project Path="Amigurumemi.Contracts/Amigurumemi.Contracts.csproj" Id="f643a0f3-1c9f-4ee0-af2d-3fdb3d8455a2" />
+  <Project Path="Amigurumemi.Data/Amigurumemi.Data.csproj" />
+  <Project Path="Amigurumemi.Repositories/Amigurumemi.Repositories.csproj" Id="01ccba40-77a1-4607-973b-c4981a7479b9" />
+  <Project Path="Amigurumemi.Web/Amigurumemi.Web.csproj" Id="320fb985-e086-4532-bb77-f11717a9f057" />
+</Solution>

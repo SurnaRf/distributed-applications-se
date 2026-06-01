@@ -1,0 +1,44 @@
+﻿@using Amigurumemi.Contracts.Messaging.Responses.Patterns
+@model PatternResponse
+
+<div class="container mt-4" style="max-width: 500px;">
+    <div class="card shadow-sm border-danger">
+        <div class="card-header bg-danger text-white">
+            <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Delete Pattern</h4>
+        </div>
+        <div class="card-body">
+            
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                    <i class="bi bi-x-circle-fill me-2 fs-5"></i>
+                    <div>
+                        @ViewBag.ErrorMessage
+                    </div>
+                </div>
+            }
+
+            <p class="lead text-center my-3">
+                Are you sure you want to delete: <br />
+                <strong class="text-dark">@Model.Name</strong>?
+            </p>
+
+            <div class="alert alert-warning small">
+                <i class="bi bi-info-circle"></i> Note: Patterns that are currently linked to any active project cannot be removed from the system.
+            </div>
+        </div>
+        
+        <div class="card-footer bg-transparent d-flex justify-content-end gap-2">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Cancel
+            </a>
+            
+            <form asp-action="DeleteConfirmed" method="post" class="d-inline">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete Permanently
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

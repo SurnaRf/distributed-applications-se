@@ -1,0 +1,168 @@
+﻿@using Amigurumemi.Contracts.Messaging.Responses.Projects
+@using Amigurumemi.Data.Entities
+@model ProjectGetResponse
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Crochet Projects</h2>
+        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> New Project</a>
+    </div>
+
+    <form method="get" class="card p-3 bg-light mb-4 shadow-sm">
+        <div class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label small text-muted">Project Name</label>
+                <input type="text" name="name" value="@ViewBag.CurrentName" class="form-control" placeholder="Search projects by name..." />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">-- All Statuses --</option>
+                    @foreach (var statusValue in Enum.GetValues(typeof(ProjectStatus)))
+                    {
+                        if (ViewBag.CurrentStatus != null && (ProjectStatus)ViewBag.CurrentStatus == (ProjectStatus)statusValue)
+                        {
+                            <option value="@statusValue" selected="selected">@statusValue</option>
+                        }
+                        else
+                        {
+                            <option value="@statusValue">@statusValue</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2 align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <a asp-action="Index" class="btn btn-secondary w-100">Clear</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        @if (Model.Items != null && Model.Items.Any())
+        {
+            foreach (var item in Model.Items)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm @(item.IsFavorite ? "border-warning" : "")">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="card-title">@item.Name</h5>
+                                @if (item.IsFavorite)
+                                {
+                                    <span class="badge bg-warning text-dark">⭐ Fav</span>
+                                }
+                            </div>
+                            
+                            <p class="text-muted small mb-1">
+                                <i class="bi bi-journal-bookmark"></i> Pattern: @item.PatternName
+                            </p>
+
+                            <div class="mb-2 d-flex flex-wrap gap-1">
+                                <span class="text-muted small me-1"><i class="bi bi-palette"></i> Yarns:</span>
+                                @if (item.YarnNames != null && item.YarnNames.Any())
+                                {
+                                    foreach (var yarnName in item.YarnNames)
+                                    {
+                                        <span class="badge bg-light text-dark border rounded-pill small">
+                                            🧶 @yarnName
+                                        </span>
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted small" style="font-style: italic;">None selected</span>
+                                }
+                            </div>
+                            
+                            <div class="mb-3">
+                                <span class="badge @(item.Status.ToString() == "Completed" ? "bg-success" : item.Status.ToString() == "InProgress" ? "bg-primary" : "bg-secondary")">
+                                    @item.Status
+                                </span>
+                                <span class="text-dark fw-bold float-end">@item.EstimatedCost.ToString("C")</span>
+                            </div>
+
+                            <div class="progress mb-3" style="height: 20px;">
+                                <div class="progress-bar @(item.Status.ToString() == "Completed" ? "bg-success" : "bg-primary")"
+                                     role="progressbar" style="width: @item.Progress%" aria-valuenow="@item.Progress" aria-valuemin="0" aria-valuemax="100">
+                                    @item.Progress%
+                                </div>
+                            </div>
+
+                            <p class="card-text text-truncate small">@item.Notes</p>
+                        </div>
+                        
+                        <div class="card-footer bg-transparent d-flex justify-content-between gap-1">
+                            <div>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Del</a>
+                            </div>
+                            
+                            <div class="d-flex gap-1">
+                                @if (item.Status.ToString() == "NotStarted")
+                                {
+                                    <form asp-action="Start" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        <button class="btn btn-sm btn-success">Start</button>
+                                    </form>
+                                }
+                                @if (item.Status.ToString() == "InProgress")
+                                {
+                                    <form asp-action="Complete" asp-route-id="@item.Id" method="post" class="d-inline">
+                                        <button class="btn btn-sm btn-success">Complete</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center text-muted py-5">
+                <i class="bi bi-folder-x display-4 text-secondary"></i>
+                <p class="mt-2 lead">No projects found.</p>
+            </div>
+        }
+    </div>
+
+    @if (Model.Pager != null && Model.Pager.Count > Model.Pager.PageSize)
+    {
+        int totalPages = (int)Math.Ceiling((double)Model.Pager.Count / Model.Pager.PageSize);
+        int currentPage = Model.Pager.Page;
+
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                
+                <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(currentPage - 1)"
+                       asp-route-name="@ViewBag.CurrentName"
+                       asp-route-status="@ViewBag.CurrentStatus">Previous</a>
+                </li>
+
+                @for (int i = 1; i <= totalPages; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@i"
+                           asp-route-name="@ViewBag.CurrentName"
+                           asp-route-status="@ViewBag.CurrentStatus">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-page="@(currentPage + 1)"
+                       asp-route-name="@ViewBag.CurrentName"
+                       asp-route-status="@ViewBag.CurrentStatus">Next</a>
+                </li>
+            </ul>
+            <div class="text-center text-muted small mt-2">
+                Showing @Model.Items.Count of @Model.Pager.Count projects
+            </div>
+        </nav>
+    }
+</div>

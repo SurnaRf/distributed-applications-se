@@ -1,0 +1,61 @@
+﻿@using Amigurumemi.Contracts.Messaging.Requests.Users
+@model UserRequest
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-5">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-success">Join Amigurumemi</h2>
+                    <p class="text-muted">Start tracking your lovely crochet creations!</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label small fw-bold">First Name</label>
+                            <input asp-for="FirstName" class="form-control text-muted" placeholder="John" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label small fw-bold">Last Name</label>
+                            <input asp-for="LastName" class="form-control text-muted" placeholder="Doe" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label small fw-bold">Username</label>
+                        <input asp-for="Username" class="form-control text-muted" placeholder="choose_username" />
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label small fw-bold">Email Address</label>
+                        <input asp-for="Email" type="email" class="form-control text-muted" placeholder="name@example.com" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label small fw-bold">Password</label>
+                        <input asp-for="Password" type="password" class="form-control text-muted" placeholder="••••••••" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 btn-lg rounded-pill shadow-sm">Register Account</button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <p class="mb-0 text-muted small">Already a member?</p>
+                    <a asp-action="Login" class="text-decoration-none fw-bold text-primary">Login to your account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

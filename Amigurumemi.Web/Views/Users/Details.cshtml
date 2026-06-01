@@ -1,0 +1,99 @@
+﻿@using Amigurumemi.Contracts.Messaging.Responses.Users
+@model UserResponse
+
+@{
+    var stats = ViewBag.Stats as UserStatsResponse;
+}
+
+<div class="container mt-4" style="max-width: 800px;">
+    @using Microsoft.AspNetCore.Http
+    @inject IHttpContextAccessor HttpContextAccessor
+
+        @{
+            var userRole = HttpContextAccessor.HttpContext?.Session.GetString("Role");
+        }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>User Profile & Statistics</h2>
+    
+        @if (userRole == "Admin")
+        {
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-house"></i> Back to Home
+            </a>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center py-4">
+                    <div class="rounded-circle bg-light d-inline-block p-3 mb-3 text-secondary" style="font-size: 3rem;">
+                        <i class="bi bi-person-badge"></i>
+                    </div>
+                    <h4>@Model.FirstName @Model.LastName</h4>
+                    <p class="text-muted small">@@@Model.Username</p>
+                    <span class="badge @(Model.Role == "Admin" ? "bg-danger" : "bg-primary") px-3 py-2 rounded-pill">
+                        @Model.Role
+                    </span>
+                    <hr />
+                    <p class="text-start mb-1 small text-muted"><strong>Email:</strong> @Model.Email</p>
+                    <p class="text-start mb-3 small text-muted"><strong>Joined:</strong> @Model.RegistrationDate.ToString("yyyy-MM-dd")</p>
+                    
+                    <div class="d-grid gap-2 border-top pt-3">
+                        <a asp-controller="Account" asp-action="ChangePassword" class="btn btn-outline-warning btn-sm fw-bold">
+                            <i class="bi bi-key-fill"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7 mb-4">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-header bg-white fw-bold py-3 text-secondary">Activity Overview</div>
+                <div class="card-body">
+                    @if (stats != null)
+                    {
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded text-center">
+                                    <h3 class="text-primary fw-bold mb-0">@stats.TotalProjects</h3>
+                                    <span class="small text-muted">Total Projects</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded text-center">
+                                    <h3 class="text-warning fw-bold mb-0">@stats.ActiveProjects</h3>
+                                    <span class="small text-muted">Active Projects</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded text-center">
+                                    <h3 class="text-success fw-bold mb-0">@stats.CompletedProjects</h3>
+                                    <span class="small text-muted">Completed</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded text-center">
+                                    <h3 class="text-info fw-bold mb-0">@stats.PatternsCreated</h3>
+                                    <span class="small text-muted">Patterns Shared</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center py-5">No statistics available for this user.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
